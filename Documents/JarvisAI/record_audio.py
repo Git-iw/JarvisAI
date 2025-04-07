@@ -52,6 +52,13 @@ def record_audio(duration=5):
     print("🎙️ Listening...")
     audio = sd.rec(int(duration * fs), samplerate=fs, channels=1, dtype='int16')
     sd.wait()
+
+    # Calculate RMS energy to check if there's actual speech
+    rms = np.sqrt(np.mean(audio ** 2))
+    if rms < 500:  # You can tweak this threshold
+        print("🤫 Detected silence or low noise. Please speak louder.")
+        return None
+
     print("✅ Recording Done")
 
     # Save audio temporarily
@@ -59,17 +66,25 @@ def record_audio(duration=5):
         wav.write(temp_file.name, fs, audio)
         return temp_file.name
 
+
 def transcribe_audio(file_path):
     print("🧠 Transcribing with Whisper...")
     try:
-        result = model.transcribe(file_path, language="te")  # Force Telugu
+        result = model.transcribe(file_path, language="en")  # Force Telugu
         text = result["text"].strip()
         if text:
             print("📝 Whisper Transcription:", text)
             return text
     except Exception as e:
         print("⚠️ Whisper failed:", e)
-
+#
+# import sounddevice as sd
+# import numpy as np
+# import whisper
+# import tempfile
+# import scipy.io.wavfile as wav
+# import speech_recognition as sr
+# import os
 
 
 
