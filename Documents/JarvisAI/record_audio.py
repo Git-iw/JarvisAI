@@ -47,7 +47,7 @@ import os
 # Load the best Whisper model
 model = whisper.load_model("large")  # large-v3 is the most accurate for multilingual
 
-def record_audio(duration=5):
+def record_audio(duration=5, threshold=40):
     fs = 44100  # Sample rate
     print("🎙️ Listening...")
     audio = sd.rec(int(duration * fs), samplerate=fs, channels=1, dtype='int16')
@@ -55,7 +55,8 @@ def record_audio(duration=5):
 
     # Calculate RMS energy to check if there's actual speech
     rms = np.sqrt(np.mean(audio ** 2))
-    if rms < 500:  # You can tweak this threshold
+    # print(f"RMS: {rms}")
+    if rms < threshold:  # You can tweak this threshold
         print("🤫 Detected silence or low noise. Please speak louder.")
         return None
 
