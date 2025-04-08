@@ -47,17 +47,17 @@ def main():
         print("🎙️ JARVIS AI Listening...")
         audio_file = record_audio()
         if audio_file is None:
+            detect_wake_word()
             continue
 
         text_prompt = transcribe_audio(audio_file)
-
         # if not text_prompt.strip():
         #     print("⚠️ Silence detected. Please speak again.")
         #     continue  # Skip this cycle if the input is empty
 
         print(f"User: {text_prompt}")
 
-        if "quit" in text_prompt.lower():
+        if "quit".lower() == text_prompt.lower():
             print("Goodbye Sir")
             engine.say("Goodbye Sir")
             engine.runAndWait()
