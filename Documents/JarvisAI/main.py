@@ -71,7 +71,8 @@ def main():
         if "play the song".lower() in text_prompt.lower():
             song = text_prompt.replace("play the song", "").strip()
             play_song(song)
-            continue
+            detect_wake_word()
+
 
         response = gemini_prompt(text_prompt)
 
