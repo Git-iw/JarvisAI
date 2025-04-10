@@ -5,6 +5,7 @@ from record_audio import record_audio
 from transcribe import transcribe_audio
 from gemini_bot import gemini_prompt
 from spotify import play_song
+from spotify import extract_song_query
 from vosk import Model, KaldiRecognizer
 import os
 import pyttsx3
@@ -70,7 +71,8 @@ def main():
 
         if "play the song".lower() in text_prompt.lower():
             song = text_prompt.replace("play the song", "").strip()
-            play_song(song)
+            query = extract_song_query(song)
+            play_song(query)
             detect_wake_word()
 
 
