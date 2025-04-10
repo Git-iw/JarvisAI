@@ -4,6 +4,7 @@ import json
 from record_audio import record_audio
 from transcribe import transcribe_audio
 from gemini_bot import gemini_prompt
+from spotify import play_song
 from vosk import Model, KaldiRecognizer
 import os
 import pyttsx3
@@ -57,14 +58,20 @@ def main():
 
         print(f"User: {text_prompt}")
 
-        if "quit".lower() == text_prompt.lower():
+        if "quit".lower() in text_prompt.lower():
             print("Goodbye Sir")
             engine.say("Goodbye Sir")
             engine.runAndWait()
             break
 
-        if "open youtube" in text_prompt.lower():
+        if "open youtube".lower() in text_prompt.lower():
             webbrowser.open("https://youtube.com")
+            continue
+
+        if "play the song".lower() in text_prompt.lower():
+            song = text_prompt.replace("play the song", "").strip()
+            play_song(song)
+            continue
 
         response = gemini_prompt(text_prompt)
 
