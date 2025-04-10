@@ -1,8 +1,11 @@
+from asyncio import timeout
+
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from dotenv import load_dotenv
 from pathlib import Path
 import os
+import re
 
 env_path = Path(__file__).resolve().parent / '.env'
 load_dotenv(dotenv_path=env_path)
@@ -18,19 +21,48 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
     scope="user-read-playback-state,user-modify-playback-state,user-read-currently-playing"
 ))
 
-def play_song(song_name):
-    results = sp.search(q=song_name, type="track", limit=1)
-    if results["tracks"]["items"]:
-        track_uri = results['tracks']['items'][0]['uri']
-        # sp.start_playback(uris=[track_uri])
-        print(f"🎵 Playing: {results['tracks']['items'][0]['name']} by {results['tracks']['items'][0]['artists'][0]['name']}")
-        devices = sp.devices()
 
+def extract_song_query(prompt):
+    prompt = str(prompt).lower().strip()
+
+    # Remove punctuation
+    prompt = re.sub(r'[^\w\s]', '', prompt)
+
+    # Remove filler phrases
+    filler_phrases = ["play the song", "play", "can you", "could you", "please", "i want to hear", "the song"]
+    for phrase in filler_phrases:
+        if phrase in prompt:
+            prompt = prompt.replace(phrase, "")
+
+    prompt = prompt.strip()
+
+    # Try to split by "by" to get song and artist
+    if " by " in prompt:
+        song, artist = prompt.split(" by ", 1)
+        return song.strip(), artist.strip()
+
+    return prompt.strip(), ""
+
+
+def play_song(prompt):
+    song, artist = extract_song_query(prompt)
+
+    if artist:
+        query = f"track:{song} artist:{artist}"
+    else:
+        query = f"track:{song}"
+
+    results = sp.search(q=query, type="track", limit=1)
+    if results["tracks"]["items"]:
+        track = results['tracks']['items'][0]
+        track_uri = track['uri']
+        print(f"🎵 Playing: {track['name']} by {track['artists'][0]['name']}")
+
+        devices = sp.devices()
         if not devices["devices"]:
             return print("No active devices found")
 
         device_id = devices["devices"][0]["id"]
-        sp.start_playback(device_id=device_id,uris=[track_uri])
+        sp.start_playback(device_id=device_id, uris=[track_uri])
     else:
-        print("Song not found")
-
+        print("❌ Song not found.")
