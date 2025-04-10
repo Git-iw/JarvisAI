@@ -22,8 +22,15 @@ def play_song(song_name):
     results = sp.search(q=song_name, type="track", limit=1)
     if results["tracks"]["items"]:
         track_uri = results['tracks']['items'][0]['uri']
-        sp.start_playback(uris=[track_uri])
+        # sp.start_playback(uris=[track_uri])
         print(f"🎵 Playing: {results['tracks']['items'][0]['name']} by {results['tracks']['items'][0]['artists'][0]['name']}")
+        devices = sp.devices()
+
+        if not devices["devices"]:
+            return print("No active devices found")
+
+        device_id = devices["devices"][0]["id"]
+        sp.start_playback(device_id=device_id,uris=[track_uri])
     else:
         print("Song not found")
 
