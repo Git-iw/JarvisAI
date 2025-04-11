@@ -42,46 +42,47 @@ def detect_wake_word():
                     return
 
 def main():
-    detect_wake_word()  # Only happens once at startup
-    print("✨ Wake word detected! Jarvis is now active.")
-
     while True:
-        print("🎙️ JARVIS AI Listening...")
-        audio_file = record_audio()
-        if audio_file is None:
-            detect_wake_word()
-            continue
+        detect_wake_word()
+        print("✨ Wake word detected! Jarvis is now active.")
 
-        text_prompt = transcribe_audio(audio_file)
+        while True:
+            print("🎙️ JARVIS AI Listening...")
+            audio_file = record_audio()
+            if audio_file is None:
+                detect_wake_word()
+                continue
 
-        print(f"User: {text_prompt}")
+            text_prompt = transcribe_audio(audio_file)
 
-        if "quit".lower() in text_prompt.lower():
-            print("Goodbye Sir")
-            engine.say("Goodbye Sir")
+            print(f"User: {text_prompt}")
+
+            if "quit".lower() in text_prompt.lower():
+                print("Goodbye Sir(falling back for wake word detection")
+                engine.say("Goodbye Sir")
+                engine.runAndWait()
+                break
+
+            if "open youtube".lower() in text_prompt.lower():
+                webbrowser.open("https://youtube.com")
+                break
+
+            if "play the song".lower() in text_prompt.lower():
+                song = text_prompt.replace("play the song", "").strip()
+                query = extract_song_query(song)
+                play_song(query)
+                break
+
+
+            response = gemini_prompt(text_prompt)
+
+            if not response.strip():
+                print("⚠️ Gemini returned an empty response.")
+                continue
+
+            print(f"Jarvis: {response}")
+            engine.say(response)
             engine.runAndWait()
-            break
-
-        if "open youtube".lower() in text_prompt.lower():
-            webbrowser.open("https://youtube.com")
-            continue
-
-        if "play the song".lower() in text_prompt.lower():
-            song = text_prompt.replace("play the song", "").strip()
-            query = extract_song_query(song)
-            play_song(query)
-            detect_wake_word()
-
-
-        response = gemini_prompt(text_prompt)
-
-        if not response.strip():
-            print("⚠️ Gemini returned an empty response.")
-            continue
-
-        print(f"Jarvis: {response}")
-        engine.say(response)
-        engine.runAndWait()
 
 
 if __name__ == "__main__":
