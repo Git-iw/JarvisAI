@@ -53,9 +53,6 @@ def main():
             continue
 
         text_prompt = transcribe_audio(audio_file)
-        # if not text_prompt.strip():
-        #     print("⚠️ Silence detected. Please speak again.")
-        #     continue  # Skip this cycle if the input is empty
 
         print(f"User: {text_prompt}")
 
