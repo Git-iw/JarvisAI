@@ -46,6 +46,7 @@ def extract_song_query(prompt):
 
 
 def play_song(prompt):
+    prompt = str(prompt).lower()
     song, second = extract_song_query(prompt)
 
     if " from " in prompt.lower():
