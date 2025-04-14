@@ -38,19 +38,24 @@ def extract_song_query(prompt):
     if " by " in prompt:
         song, artist = prompt.split(" by ", 1)
         return song.strip(), artist.strip()
+    if " from " in prompt:
+        song, album = prompt.split(" from ",1)
+        return song.strip(), album.strip()
 
     return prompt.strip(), ""
 
 
 def play_song(prompt):
-    song, artist = extract_song_query(prompt)
+    song, second = extract_song_query(prompt)
 
-    if artist:
-        query = f"track:{song} artist:{artist}"
+    if " from " in prompt.lower():
+        query = f"track:{song} album:{second}"
+    elif second:
+        query = f"track:{song} artist:{second}"
     else:
         query = f"track:{song}"
 
-    results = sp.search(q=query, type="track", limit=1)
+    results = sp.search(q=query, type="track", limit=5)
     if results["tracks"]["items"]:
         track = results['tracks']['items'][0]
         track_uri = track['uri']
