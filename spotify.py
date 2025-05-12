@@ -2,6 +2,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from dotenv import load_dotenv
 from pathlib import Path
+from eleven_labs_voice import speak
 import os
 import re
 
@@ -60,7 +61,9 @@ def play_song(prompt):
     if results["tracks"]["items"]:
         track = results['tracks']['items'][0]
         track_uri = track['uri']
-        print(f"🎵 Playing: {track['name']} by {track['artists'][0]['name']}")
+        details = f"Playing: {track['name']} by {track['artists'][0]['name']}"
+        print(f"🎵 {details}")
+        speak(details)
 
         devices = sp.devices()
         if not devices["devices"]:
