@@ -9,10 +9,8 @@ from spotify import extract_song_query
 from vosk import Model, KaldiRecognizer
 import os
 from eleven_labs_voice import speak
-# import pyttsx3
 import webbrowser
 
-# engine = pyttsx3.init()
 
 if not os.path.exists("vosk-model"):
     print("Please download a Vosk model and place it in a folder named 'model'")
@@ -82,8 +80,6 @@ def main():
                 continue
 
             print(f"Jarvis: {response}")
-            # engine.say(response)
-            # engine.runAndWait()
             speak(response)
 
 
