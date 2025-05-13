@@ -43,7 +43,6 @@ def detect_wake_word():
 def main():
     while True:
         detect_wake_word()
-        print("✨ Wake word detected! Jarvis is now active.")
 
         while True:
             print("🎙️ JARVIS AI Listening...")
