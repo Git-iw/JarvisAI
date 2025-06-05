@@ -12,6 +12,6 @@ def speak(prompt):
     audio = client.generate(
         text=prompt,
         voice="bHMGij7OhWM9CNyCNeSn",
-        model="eleven_flash_v2"
+        model="eleven_turbo_v2"
     )
     play(audio)
