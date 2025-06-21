@@ -5,8 +5,8 @@ import tempfile
 import scipy.io.wavfile as wav
 
 
-# Load the best Whisper model
-model = whisper.load_model("large")  # large-v3 is the most accurate for multilingual
+
+model = whisper.load_model("base")
 
 def record_audio(duration=5, threshold=15):
     fs = 44100  # Sample rate
