@@ -1,6 +1,8 @@
 import queue
 import sounddevice as sd
 import json
+import re
+import string
 from record_audio import record_audio
 from transcribe import transcribe_audio
 from gemini_bot import gemini_prompt
@@ -77,6 +79,16 @@ def main():
             if not response.strip():
                 print("⚠️ Gemini returned an empty response.")
                 continue
+                 
+            if "write me".lower() in text_prompt.lower():
+                filename = text_prompt[6:20].replace(" ", "_") + ".txt"  # Replace spaces to avoid issues
+
+                try:
+                    with open(filename, "w", encoding="utf-8") as file:
+                        file.write(response)
+                        print(f"Response saved to {file.name}\n")
+                except Exception as e:
+                    print("Error saving file:", e)
 
             print(f"Jarvis: {response}")
             speak(response)
